@@ -4,6 +4,7 @@ export const useStore = defineStore("storeId", {
     return {
       redirPath: "", //跳转路由地址
       redirIndex: -1, //跳转路由地址索引
+      scrollPageY: 0, //页面滚动距离
     };
   },
   getters: {

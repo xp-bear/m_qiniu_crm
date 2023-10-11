@@ -21,7 +21,7 @@
 
 @keyframes ran {
   from {
-    backgroud-position: 0 0;
+    background-position: 0 0;
   }
   to {
     background-position: 2000px 0;

@@ -1,8 +1,5 @@
 <template>
   <!-- // slide-left为过度样式--向左滑动 -->
-  <!-- <transition >
-    <router-view ></router-view>
-  </transition> -->
 
   <router-view v-slot="{ Component }">
     <transition :name="transitionName" type="transition">
@@ -11,8 +8,6 @@
   </router-view>
 
   <Footer v-show="currentComponent"></Footer>
-  <!-- 使用动态组件根据条件渲染不同的组件 -->
-  <!-- <component :is="currentComponent"></component> -->
 </template>
 <script setup>
 import Footer from "@/components/Footer.vue";
@@ -28,7 +23,9 @@ let { redirPath, redirIndex } = storeToRefs(store);
 
 let currentComponent = ref(true); //当前加载哪一个组件
 let transitionName = ref("slide-left"); //左边动画切换 还是 右边动画切换
+
 watch(redirIndex, (newVal, oldVal) => {
+  // console.log(newVal, oldVal);
   if (newVal > oldVal) {
     transitionName.value = "slide-left";
   } else {
@@ -61,16 +58,6 @@ watch(
   width: 7.5rem;
   margin: 0 auto;
   min-height: 100vh;
-}
-
-.router-view {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: 0 auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .slide-right-enter-active,
