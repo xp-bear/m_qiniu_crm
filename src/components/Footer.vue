@@ -1,28 +1,28 @@
 <template>
-  <div class="Footer">
-    <var-bottom-navigation v-model:active="activeBtn" :fixed="true" @change="changeBtn">
-      <var-bottom-navigation-item label="我的空间">
-        <template #icon>
-          <var-icon class="iconfont icon-yunkongjian" />
-        </template>
-      </var-bottom-navigation-item>
-      <var-bottom-navigation-item label="上传数据">
-        <template #icon>
-          <var-icon class="iconfont icon-shangchuan" />
-        </template>
-      </var-bottom-navigation-item>
-      <var-bottom-navigation-item label="共享中心">
-        <template #icon>
-          <var-icon class="iconfont icon-hangzhengguanli" />
-        </template>
-      </var-bottom-navigation-item>
-      <var-bottom-navigation-item label="我的">
-        <template #icon>
-          <var-icon class="iconfont icon-wode" />
-        </template>
-      </var-bottom-navigation-item>
-    </var-bottom-navigation>
-  </div>
+  <!-- <div class="Footer"> -->
+  <var-bottom-navigation v-model:active="activeBtn" :fixed="true" @change="changeBtn">
+    <var-bottom-navigation-item label="我的空间">
+      <template #icon>
+        <var-icon class="iconfont icon-yunkongjian" />
+      </template>
+    </var-bottom-navigation-item>
+    <var-bottom-navigation-item label="上传数据">
+      <template #icon>
+        <var-icon class="iconfont icon-shangchuan" />
+      </template>
+    </var-bottom-navigation-item>
+    <var-bottom-navigation-item label="共享中心">
+      <template #icon>
+        <var-icon class="iconfont icon-hangzhengguanli" />
+      </template>
+    </var-bottom-navigation-item>
+    <var-bottom-navigation-item label="我的">
+      <template #icon>
+        <var-icon class="iconfont icon-wode" />
+      </template>
+    </var-bottom-navigation-item>
+  </var-bottom-navigation>
+  <!-- </div> -->
 </template>
 
 <script setup>

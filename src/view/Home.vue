@@ -69,12 +69,12 @@
           </div>
         </div>
       </var-tab-item>
-      <var-tab-item> 图片 </var-tab-item>
-      <var-tab-item> 视频 </var-tab-item>
+      <var-tab-item><div style="width: 100%; height: 5rem">图片</div></var-tab-item>
+      <var-tab-item> <div style="width: 100%; height: 5rem">视频</div> </var-tab-item>
     </var-tabs-items>
 
     <!-- 回到顶部 -->
-    <var-back-top :duration="300" right="26" bottom="60" />
+    <var-back-top :duration="300" right="27.5" bottom="60" />
   </div>
 </template>
 
@@ -192,7 +192,7 @@ const toDetail = () => {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 0.1rem 0.1rem 0;
+    padding: 0.1rem 0.1rem 1rem;
     .card {
       width: 3.6rem;
       height: 3.2rem;
