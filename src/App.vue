@@ -66,7 +66,7 @@ watch(
 .slide-left-leave-active {
   height: 100%;
   will-change: transform;
-  transition: all 500ms;
+  transition: all 300ms;
   position: absolute;
   backface-visibility: hidden;
 }

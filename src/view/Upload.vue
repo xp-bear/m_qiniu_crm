@@ -28,6 +28,7 @@
         <span>拍照</span>
       </div>
       <div class="region">
+        <!-- 本地上传 -->
         <i class="iconfont icon-shangchuan1"></i>
         <span>选择文件</span>
       </div>
@@ -69,7 +70,7 @@ let imageData = ref(""); //图片链接
 let fileInput = ref(null); //上传文本的ref
 
 const show = ref(false); //显示图片的遮罩层
-const images = ref([]); //显示图片的链接。
+const images = ref([]); //显示图片的链接。 可以多张
 
 onMounted(() => {
   if ($route.path == "/upload") {
@@ -78,7 +79,7 @@ onMounted(() => {
   }
 });
 
-// 预览文件。
+// 预览文件按钮点击。
 function clickPre() {
   if (imageData.value.length == 0) {
     Snackbar({
@@ -88,7 +89,6 @@ function clickPre() {
     });
   } else {
     show.value = true;
-    imageData.value = []; //清空数据
   }
 }
 
@@ -97,7 +97,7 @@ function openCamera() {
 }
 function handleFileInputChange(event) {
   const file = event.target.files[0];
-
+  console.log(file);
   if (file) {
     const reader = new FileReader();
 
