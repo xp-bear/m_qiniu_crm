@@ -25,7 +25,7 @@ let currentComponent = ref(true); //当前加载哪一个组件
 let transitionName = ref("slide-left"); //左边动画切换 还是 右边动画切换
 
 watch(redirIndex, (newVal, oldVal) => {
-  // console.log(newVal, oldVal);
+  console.log(newVal, oldVal);
   if (newVal > oldVal) {
     transitionName.value = "slide-left";
   } else {

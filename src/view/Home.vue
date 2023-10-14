@@ -74,7 +74,7 @@
     </var-tabs-items>
 
     <!-- 回到顶部 -->
-    <var-back-top :duration="300" right="27.5" bottom="60" />
+    <var-back-top :duration="300" right="28" bottom="60" />
   </div>
 </template>
 
@@ -116,7 +116,7 @@ const doScroll = () => {
 
 setTimeout(() => {
   loadingScreen.value = false; // 数据加载完成后将加载状态设置为 false
-}, 500); // 模拟2秒后加载完成
+}, 300); // 模拟2秒后加载完成
 
 const toDetail = () => {
   router.push({ path: "/detail", query: { id: "20234" } });
@@ -138,6 +138,7 @@ const toDetail = () => {
     height: 0.9rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0.3rem 0.3rem 0;
     background-color: #fff;
     .avatar {
@@ -177,7 +178,7 @@ const toDetail = () => {
     }
     .email {
       i {
-        font-size: 0.6rem;
+        font-size: 0.5rem;
         color: #797e81;
       }
     }
