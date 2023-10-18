@@ -1,6 +1,6 @@
 <template>
   <div class="Detail" @touchstart="startSwipe" @touchmove="detectSwipe" @touchend="endSwipe">
-    <var-app-bar :title="$route.query.id">
+    <var-app-bar :title="data.file_name.slice(0, -14) || ''" style="overflow: hidden">
       <template #left>
         <var-button color="transparent" text-color="#fff" round text @click="toBack">
           <var-icon name="chevron-left" :size="24" />
@@ -19,7 +19,7 @@ import { useStore } from "@/store/index";
 import { storeToRefs } from "pinia";
 const store = useStore();
 let { redirPath, redirIndex, scrollPageY } = storeToRefs(store);
-
+let data = ref($route.query); //卡片数据
 let startX = ref(null); //手指左滑距离
 
 // dom元素加载完成
@@ -27,6 +27,7 @@ onMounted(() => {
   if ($route.path == "/detail") {
     redirPath.value = "/detail";
     // redirIndex.value = -1;
+    console.log(data.value);
   }
 });
 
