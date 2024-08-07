@@ -2,16 +2,16 @@
 export const CONFIG = {
   // 文件类型
   FILE_TYPE: [
-    ["total"],
-    [".jpg", ".jpeg", ".png", ".ico", ".svg"],
-    [".mp4"],
-    [".mp3"],
+    [".jpg", ".jpeg", ".png", ".ico", ".svg", ".gif", ".webp"],
+    [".mp4", ".ogg", ".webm"],
+    [".mp3", ".wav", ".aac"],
     [".zip", ".7z", ".rar"],
-    [".exe"],
-    [".txt", ".js", ".py", ".md", ".html", ".java"],
-    [".docx", ".doc"],
-    [".xlsx", ".xls"],
-    [".pptx", ".ppt"],
+    [".exe", ".apk", ".ipa"],
+    [".css", ".js", ".html", ".py", ".java", ".sql", ".php", ".vue", ".json"],
+    [".txt", ".md"],
+    [".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx", ".pdf"],
     ["other"],
   ],
+  // 服务器地址
+  BASE_URL: "http://192.168.1.6:7777/",
 };

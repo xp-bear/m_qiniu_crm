@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
+
 export const useStore = defineStore("storeId", {
   state: () => {
     return {
       redirPath: "", //跳转路由地址
       redirIndex: -1, //跳转路由地址索引
       scrollPageY: 0, //页面滚动距离
+      userObj: {}, //保存用户信息
     };
   },
   getters: {

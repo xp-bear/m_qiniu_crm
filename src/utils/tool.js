@@ -11,6 +11,14 @@ export function throttle(func, wait) {
   };
 }
 
-export function test() {
-  console.log("test 函数");
+// kb转化成mb
+export function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i];
 }

@@ -1,9 +1,9 @@
 import axios from "axios";
-
+import { CONFIG } from "../config/constant";
 // 创建新的axios实例
 const service = axios.create({
   // 环境变量，需要在.env文件中配置
-  baseURL: "http://127.0.0.1:7777",
+  baseURL: CONFIG.BASE_URL,
   // 超时时间暂定5s
   timeout: 5000,
 });
