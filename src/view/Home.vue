@@ -56,31 +56,31 @@
                   </div>
                   <!-- 2 音乐 -->
                   <div v-else-if="item.file_type == 2" class="extra">
-                    <img src="../assets/imgs/2.gif" alt="" />
+                    <img src="../assets/types/2.png" alt="" />
                   </div>
                   <!-- 3 压缩包 -->
                   <div v-else-if="item.file_type == 3" class="extra">
-                    <img src="../assets/imgs/3.gif" alt="" />
+                    <img src="../assets/types/3.png" alt="" />
                   </div>
                   <!-- 4-安装包 -->
                   <div v-else-if="item.file_type == 4" class="extra">
-                    <img src="../assets/imgs/4.gif" alt="" />
+                    <img src="../assets/types/4.png" alt="" />
                   </div>
                   <!-- 5-代码文本 -->
                   <div v-else-if="item.file_type == 5" class="extra">
-                    <img src="../assets/imgs/5.gif" alt="" />
+                    <img src="../assets/types/5.png" alt="" />
                   </div>
                   <!-- 6-记事本 -->
                   <div v-else-if="item.file_type == 6" class="extra">
-                    <img src="../assets/imgs/6.gif" alt="" />
+                    <img src="../assets/types/6.png" alt="" />
                   </div>
                   <!-- 7-office -->
                   <div v-else-if="item.file_type == 7" class="extra">
-                    <img src="../assets/imgs/7.gif" alt="" />
+                    <img src="../assets/types/7.png" alt="" />
                   </div>
-                  <!-- 8-其他文件 -->
-                  <div v-else-if="item.file_type == 8" class="extra-other">
-                    <img src="../assets/imgs/8.gif" alt="" />
+                  <!-- 8-其他文件  class="extra-other" -->
+                  <div v-else-if="item.file_type == 8" class="extra">
+                    <img src="../assets/types/8.png" alt="" />
                   </div>
                   <div class="msg">
                     <div>
@@ -688,14 +688,14 @@
           <div v-if="popCenterData.file_suffix == '.pdf'">
             <PDFView :pdfUrl="popCenterData.file_link"></PDFView>
           </div>
-          <!-- 2 docx 文件预览 -->
-          <div v-else-if="popCenterData.file_suffix == '.docx'" style="background-color: #808080; max-height: 11rem; overflow-y: scroll">
-            <!-- 预览文件的地方（用于渲染） -->
-            <div ref="docxfile" style="transform: scale(0.5); transform-origin: top"></div>
-          </div>
-
+          <!-- 预览文件的地方（用于渲染） 2 docx 文件预览
+            <div v-else-if="popCenterData.file_suffix == '.docx'" style="background-color: #808080; max-height: 11rem; overflow-y: scroll">
+              
+              <div ref="docxfile" style="transform: scale(0.5); transform-origin: top"></div>
+            </div>
+          -->
           <div v-else>
-            <iframe :src="'https://view.officeapps.live.com/op/view.aspx?src=' + popCenterData.file_link" style="font-size: 0.24rem; height: 77vh; width: 100%"></iframe>
+            <iframe :src="'http://www.pfile.com.cn/api/profile/onlinePreview?url=' + popCenterData.file_link" style="font-size: 0.24rem; height: 77vh; width: 100%"></iframe>
           </div>
         </div>
         <!-- 8- 其他文件 -->
@@ -984,7 +984,7 @@ const toDetail = (item) => {
     }, 300);
   }
 
-  // 加载docx
+  // // 加载docx
   if (item.file_suffix == ".docx") {
     axios({
       method: "get",
