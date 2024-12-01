@@ -34,7 +34,7 @@
     <var-button v-if="isBottomState" block type="default" size="small" text disabled>已经到底了啦!</var-button>
 
     <!-- 居中弹出层 -->
-    <var-popup v-model:show="centerPopup" position="top" style="width: 100%; height: 100vh" @closed="clearPopupData">
+    <var-popup v-model:show="centerPopup" position="right" style="width: 100%; height: 100vh" @closed="clearPopupData">
       <!-- 头部标签栏 -->
       <var-app-bar title="共享数据展示面板" style="position: fixed; z-index: 2">
         <template #left>

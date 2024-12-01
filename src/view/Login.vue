@@ -111,7 +111,7 @@ function Logining() {
     email: logValue.email,
     password: logValue.password,
   };
-  
+
   userloginApi(data).then((res) => {
     // console.log(res);
     if (res.code == 200) {
@@ -128,7 +128,6 @@ function Logining() {
         duration: 1000,
         type: "success",
       });
-      
     } else {
       return Snackbar({
         content: res.message,
@@ -173,7 +172,7 @@ function registering() {
     user_email: regValue.email,
     user_sex: 0,
     user_sign: "该用户很懒，暂时没有签名。",
-    user_avatar: "http://cdn.xxoutman.cn/default_avatar.png",
+    user_avatar: "https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/default_avatar.png",
     user_createtime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
   };
   console.log(data);

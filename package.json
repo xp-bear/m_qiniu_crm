@@ -12,6 +12,7 @@
     "@varlet/ui": "^2.17.0",
     "@vueuse/components": "^10.5.0",
     "@vueuse/core": "^10.5.0",
+    "ali-oss": "^6.21.0",
     "animate.css": "^4.1.1",
     "axios": "^1.5.1",
     "dayjs": "^1.11.11",

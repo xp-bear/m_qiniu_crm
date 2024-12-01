@@ -84,7 +84,7 @@
             <span>存储空间: </span>
             <var-select v-model="selectValue" size="small">
               <var-option label="cookies" />
-              <var-option label="mkdown-picture" />
+              <var-option label="common" />
             </var-select>
           </div>
           <div class="uploadTurn"><span>添加时间戳: </span> <var-switch v-model="addTimeNow" @change="changeTimeName" /></div>
@@ -115,6 +115,7 @@ import { CONFIG } from "../config/constant.js";
 import { getQiNiuTokenApi, minsertfileApi } from "../api/index";
 import * as qiniu from "qiniu-js";
 import dayjs from "dayjs";
+import * as OSS from "../utils/tool"; // 引入oss.js
 
 let imageData = ref(""); //图片链接
 let fileInput = ref(null); //拍照上传文本的ref
@@ -163,77 +164,145 @@ function getCurrentCity() {
       // console.log(rs);
       // 百度地图解析城市名
       fileAddress.value = rs.addressComponents.province + "、" + rs.addressComponents.city + "、" + rs.addressComponents.district;
-      console.log(fileAddress.value);
+      // console.log(fileAddress.value);
     });
   });
 }
 
 // 确认上传文件
 function toSendFile() {
-  // 上传文件到七牛云
-  getQiNiuTokenApi({ space: selectValue.value, name: uploadName.value }).then((res) => {
-    let qiniu_token = res.uploadToken; //上传的token
-
-    // 这里要进行文件的上传操作,加上一些配置选项
-    const putExtra = {
-      mimeType: null,
-    };
-    const config = {
-      useCdnDomain: true,
-      region: qiniu.region.z2,
-    };
-    let observable = qiniu.upload(uploadFile.value, uploadName.value, qiniu_token, putExtra, config);
-    let observer = {
-      next(res) {
-        // console.log(res.total.percent.toFixed(0));
-        processValue.value = res.total.percent.toFixed(0);
+  // 上传到阿里OSS
+  OSS.client()
+    .multipartUpload(selectValue.value + "/" + uploadName.value, uploadFile.value, {
+      progress: function (p) {
+        // btnSendFlag.value = true;
+        processValue.value = (+p * 100).toFixed(0);
       },
-      error(err) {
-        console.log(err);
-      },
-      complete(res) {
-        let key = encodeURIComponent(res.key);
-        let base_url;
-        if (selectValue.value == "mkdown-picture") {
-          base_url = "http://mk.xxoutman.cn/";
-        } else if (selectValue.value == "cookies") {
-          base_url = "http://cdn.xxoutman.cn/";
-        }
+    })
+    .then((res) => {
+      let base_url = "https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/" + res.name;
+      console.log("上传资源链接:", base_url);
+      uploadLink.value = base_url + "?" + Date.now();
 
-        uploadLink.value = base_url + key + "?" + Date.now();
-        console.log("上传成功: ", uploadLink.value);
-
-        // 在数据库插入一条数据
-        let datas = {
-          file_createtime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"), //new Date(),
-          file_type: uploadFileType.value, //上传文件类型
-          file_name: uploadName.value.split(".").slice(0, -1).join("."), //文件名称
-          file_suffix: "." + uploadName.value.split(".").pop(), // 文件后缀名
-          file_link: uploadLink.value, //文件链接
-          file_size: "" + uploadFile.value.size, //文件大小
-          file_region: selectValue.value, //文件存储区域
-          file_user_id: JSON.parse(localStorage.getItem("userObj")).id, //文件用户id
-          file_user_name: userObj.value.username, //文件用户名,
-          file_likes: 1, //点赞用户
-          file_views: 1, //浏览量
-          file_remark: fileRemark.value,
-          file_address: fileAddress.value,
-          file_public: 0, //文件是否公开
-        };
-        minsertfileApi(datas).then((res) => {
-          // 清除本次上传记录
-          reupload();
-          return Snackbar({
-            content: "文件上传成功!",
-            duration: 1000,
-            type: "success",
-          });
+      // 在数据库插入一条数据
+      let datas = {
+        file_createtime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"), //new Date(),
+        file_type: uploadFileType.value, //上传文件类型
+        file_name: uploadName.value.split(".").slice(0, -1).join("."), //文件名称
+        file_suffix: "." + uploadName.value.split(".").pop(), // 文件后缀名
+        file_link: uploadLink.value, //文件链接
+        file_size: "" + uploadFile.value.size, //文件大小
+        file_region: selectValue.value, //文件存储区域
+        file_user_id: JSON.parse(localStorage.getItem("userObj")).id, //文件用户id
+        file_user_name: userObj.value.username, //文件用户名,
+        file_likes: 1, //点赞用户
+        file_views: 1, //浏览量
+        file_remark: fileRemark.value,
+        file_address: fileAddress.value,
+        file_public: 0, //文件是否公开
+      };
+      minsertfileApi(datas).then((res) => {
+        // 清除本次上传记录
+        reupload();
+        return Snackbar({
+          content: "文件上传成功!",
+          duration: 1000,
+          type: "success",
         });
-      },
-    };
+      });
+    });
 
-    observable.subscribe(observer); // 上传over
-  });
+  // 在数据库插入一条数据
+  // let datas = {
+  //   file_createtime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"), //new Date(),
+  //   file_type: uploadFileType.value, //上传文件类型
+  //   file_name: uploadName.value.split(".").slice(0, -1).join("."), //文件名称
+  //   file_suffix: "." + uploadName.value.split(".").pop(), // 文件后缀名
+  //   file_link: uploadLink.value, //文件链接
+  //   file_size: "" + uploadFile.value.size, //文件大小
+  //   file_region: selectValue.value, //文件存储区域
+  //   file_user_id: JSON.parse(localStorage.getItem("userObj")).id, //文件用户id
+  //   file_user_name: userObj.value.username, //文件用户名,
+  //   file_likes: 1, //点赞用户
+  //   file_views: 1, //浏览量
+  //   file_remark: fileRemark.value,
+  //   file_address: fileAddress.value,
+  //   file_public: 0, //文件是否公开
+  // };
+  // minsertfileApi(datas).then((res) => {
+  //   // 清除本次上传记录
+  //   reupload();
+  //   return Snackbar({
+  //     content: "文件上传成功!",
+  //     duration: 1000,
+  //     type: "success",
+  //   });
+  // });
+
+  // 上传文件到七牛云
+  // getQiNiuTokenApi({ space: selectValue.value, name: uploadName.value }).then((res) => {
+  //   let qiniu_token = res.uploadToken; //上传的token
+
+  //   // 这里要进行文件的上传操作,加上一些配置选项
+  //   const putExtra = {
+  //     mimeType: null,
+  //   };
+  //   const config = {
+  //     useCdnDomain: true,
+  //     region: qiniu.region.z2,
+  //   };
+  //   let observable = qiniu.upload(uploadFile.value, uploadName.value, qiniu_token, putExtra, config);
+  //   let observer = {
+  //     next(res) {
+  //       // console.log(res.total.percent.toFixed(0));
+  //       processValue.value = res.total.percent.toFixed(0);
+  //     },
+  //     error(err) {
+  //       console.log(err);
+  //     },
+  //     complete(res) {
+  //       let key = encodeURIComponent(res.key);
+  //       let base_url;
+  //       if (selectValue.value == "mkdown-picture") {
+  //         base_url = "http://mk.xxoutman.cn/";
+  //       } else if (selectValue.value == "cookies") {
+  //         base_url = "http://cdn.xxoutman.cn/";
+  //       }
+
+  //       uploadLink.value = base_url + key + "?" + Date.now();
+  //       console.log("上传成功: ", uploadLink.value);
+
+  //     // 在数据库插入一条数据
+  //     let datas = {
+  //       file_createtime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"), //new Date(),
+  //       file_type: uploadFileType.value, //上传文件类型
+  //       file_name: uploadName.value.split(".").slice(0, -1).join("."), //文件名称
+  //       file_suffix: "." + uploadName.value.split(".").pop(), // 文件后缀名
+  //       file_link: uploadLink.value, //文件链接
+  //       file_size: "" + uploadFile.value.size, //文件大小
+  //       file_region: selectValue.value, //文件存储区域
+  //       file_user_id: JSON.parse(localStorage.getItem("userObj")).id, //文件用户id
+  //       file_user_name: userObj.value.username, //文件用户名,
+  //       file_likes: 1, //点赞用户
+  //       file_views: 1, //浏览量
+  //       file_remark: fileRemark.value,
+  //       file_address: fileAddress.value,
+  //       file_public: 0, //文件是否公开
+  //     };
+  //     minsertfileApi(datas).then((res) => {
+  //       // 清除本次上传记录
+  //       reupload();
+  //       return Snackbar({
+  //         content: "文件上传成功!",
+  //         duration: 1000,
+  //         type: "success",
+  //       });
+  //     });
+  //   },
+  // };
+
+  //   observable.subscribe(observer); // 上传over
+  // });
 }
 
 // 改变后缀名称
@@ -325,7 +394,7 @@ function openCamera() {
 }
 function handleFileInputChange(event) {
   const file = event.target.files[0];
-  console.log(file);
+  // console.log(file);
   isSFXtoTYPE(".png"); //拍照的后缀名。
 
   let fname = "拍照";

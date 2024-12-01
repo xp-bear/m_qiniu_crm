@@ -595,13 +595,7 @@
         <!-- 0- 图片展示区域 -->
         <div
           v-if="popCenterData.file_type == 0"
-          style="
-            height: 4rem;
-            background: url('https://cdn.xxoutman.cn/%E9%A9%AC%E8%B5%9B%E5%85%8B-1678353275378.png?1678353275530') no-repeat;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-          "
+          style="height: 4rem; background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat; overflow: hidden; display: flex; justify-content: center"
           @click="preview(popCenterData.file_link)"
           @touchstart="handleTouchStart"
         >
@@ -614,7 +608,7 @@
             width: 7.3rem;
             margin: 0 auto;
             height: 4rem;
-            background: url('https://cdn.xxoutman.cn/%E9%A9%AC%E8%B5%9B%E5%85%8B-1678353275378.png?1678353275530') no-repeat;
+            background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -630,7 +624,7 @@
             width: 7.3rem;
             margin: 0 auto;
             height: 4rem;
-            background: url('https://cdn.xxoutman.cn/tuchuang_music-1675916098865.jpg?1675916099175') no-repeat;
+            background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat;
             background-size: cover;
             overflow: hidden;
             display: flex;
@@ -644,13 +638,7 @@
         <!-- 3- 压缩包 -->
         <div
           v-if="popCenterData.file_type == 3"
-          style="
-            height: 4rem;
-            background: url('https://cdn.xxoutman.cn/%E9%A9%AC%E8%B5%9B%E5%85%8B-1678353275378.png?1678353275530') no-repeat;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-          "
+          style="height: 4rem; background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat; overflow: hidden; display: flex; justify-content: center"
           @touchstart="handleTouchStart"
         >
           <img src="../assets/imgs/3.gif" alt="" style="width: 100%; object-fit: contain" />
@@ -658,13 +646,7 @@
         <!-- 4-安装包 -->
         <div
           v-if="popCenterData.file_type == 4"
-          style="
-            height: 4rem;
-            background: url('https://cdn.xxoutman.cn/%E9%A9%AC%E8%B5%9B%E5%85%8B-1678353275378.png?1678353275530') no-repeat;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-          "
+          style="height: 4rem; background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat; overflow: hidden; display: flex; justify-content: center"
           @touchstart="handleTouchStart"
         >
           <img src="../assets/imgs/3.gif" alt="" style="width: 100%; object-fit: contain" />
@@ -701,13 +683,7 @@
         <!-- 8- 其他文件 -->
         <div
           v-if="popCenterData.file_type == 8"
-          style="
-            height: 4rem;
-            background: url('https://cdn.xxoutman.cn/%E9%A9%AC%E8%B5%9B%E5%85%8B-1678353275378.png?1678353275530') no-repeat;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-          "
+          style="height: 4rem; background: url('https://xp-cdn-oss.oss-cn-wuhan-lr.aliyuncs.com/common/imgbg.png') no-repeat; overflow: hidden; display: flex; justify-content: center"
           @touchstart="handleTouchStart"
         >
           <img src="../assets/imgs/3.gif" alt="" style="width: 100%; object-fit: contain" />
@@ -842,6 +818,7 @@ import { storeToRefs } from "pinia";
 const store = useStore();
 let { redirPath, redirIndex, scrollPageY } = storeToRefs(store);
 import { ImagePreview } from "@varlet/ui";
+import * as OSS from "../utils/tool"; // 引入oss.js
 
 import PDFView from "../components/pdfPreview.vue";
 // 引入axios用来发请求
@@ -1018,23 +995,38 @@ function closePopup() {
 
 // 删除文件
 function deleteFile(popCenterData) {
-  // console.log(popCenterData);
-  let data = {
-    file_name: popCenterData.file_name + popCenterData.file_suffix,
-    space: popCenterData.file_region,
-  };
+  // 阿里云删除文件
+  OSS.client()
+    .delete(popCenterData.file_region + "/" + popCenterData.file_name + popCenterData.file_suffix)
+    .then((res) => {
+      if (res.res.status == 204) {
+        deletefileApi({ file_id: popCenterData.file_id }).then((result) => {
+          cardDatas.value = cardDatas.value.filter((item) => item.file_id !== popCenterData.file_id);
+          popCenterState.value = false;
+          Snackbar.success({ content: "删除成功!", duration: 1000 });
+        });
+      } else {
+        Snackbar.error({ content: "删除失败!", duration: 1000 });
+      }
+    });
 
-  deleteQiNiuFileApi(data).then((res) => {
-    if (res.code == 200) {
-      deletefileApi({ file_id: popCenterData.file_id }).then((result) => {
-        cardDatas.value = cardDatas.value.filter((item) => item.file_id !== popCenterData.file_id);
-        popCenterState.value = false;
-        Snackbar.success({ content: "删除成功!", duration: 1000 });
-      });
-    } else {
-      Snackbar.error({ content: "删除失败!", duration: 1000 });
-    }
-  });
+  // console.log(popCenterData);
+  // let data = {
+  //   file_name: popCenterData.file_name + popCenterData.file_suffix,
+  //   space: popCenterData.file_region,
+  // };
+
+  //   deleteQiNiuFileApi(data).then((res) => {
+  //     if (res.code == 200) {
+  //       deletefileApi({ file_id: popCenterData.file_id }).then((result) => {
+  //         cardDatas.value = cardDatas.value.filter((item) => item.file_id !== popCenterData.file_id);
+  //         popCenterState.value = false;
+  //         Snackbar.success({ content: "删除成功!", duration: 1000 });
+  //       });
+  //     } else {
+  //       Snackbar.error({ content: "删除失败!", duration: 1000 });
+  //     }
+  //   });
 }
 
 // 格式化名称

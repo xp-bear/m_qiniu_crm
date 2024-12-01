@@ -13,5 +13,5 @@ export const CONFIG = {
     ["other"],
   ],
   // 服务器地址
-  BASE_URL: "http://150.158.21.251:7777/",
+  BASE_URL: "http://127.0.0.1:7777/",
 };
