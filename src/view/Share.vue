@@ -34,7 +34,7 @@
     <var-button v-if="isBottomState" block type="default" size="small" text disabled>已经到底了啦!</var-button>
 
     <!-- 居中弹出层 -->
-    <var-popup v-model:show="centerPopup" position="right" style="width: 100%; height: 100vh" @closed="clearPopupData">
+    <var-popup v-model:show="centerPopup" position="right" style="width: 100%; height: 100vh" @touchstart="startSwipe" @touchmove="detectSwipe" @touchend="endSwipe" @closed="clearPopupData">
       <!-- 头部标签栏 -->
       <var-app-bar title="共享数据展示面板" style="position: fixed; z-index: 2">
         <template #left>
@@ -126,6 +126,8 @@ const footFlag = ref(false); //详情显示状态
 
 const likeColor = ref(false); //点击红心的状态
 
+let startX = ref(null); //手指左滑距离
+
 // 收藏红心样式
 const likeStyle = computed(() => ({
   color: likeColor.value ? "red" : "#7c8085",
@@ -141,6 +143,30 @@ const textStyle = computed(() => ({
 
 const userObj = ref({}); //用户信息对象
 // ---------------------------------------------------
+
+// 左滑关闭按钮。
+const startSwipe = (event) => {
+  startX.value = event.touches[0].clientX;
+};
+
+const detectSwipe = (event) => {
+  if (startX.value) {
+    const currentX = event.touches[0].clientX;
+    const deltaX = startX.value - currentX;
+    if (deltaX < -70) {
+      // 清除物理按键返回键的空值
+      window.history.back();
+      // 滑动距离超过50个像素，表示左滑
+      retHome();
+      startX.value = null;
+    }
+  }
+};
+
+const endSwipe = () => {
+  startX.value = null;
+};
+
 onMounted(() => {
   // console.log($route.path);
   if ($route.path == "/share") {
