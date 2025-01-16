@@ -668,7 +668,8 @@
         <div v-else-if="popCenterData.file_type == 7" @touchstart="handleTouchStart">
           <!-- 1 pdf -->
           <div v-if="popCenterData.file_suffix == '.pdf'">
-            <PDFView :pdfUrl="popCenterData.file_link"></PDFView>
+            <!-- <PDFView :pdfUrl="popCenterData.file_link"></PDFView> -->
+            <iframe :src="'http://view.xdocin.com/xdoc?_xdoc=' + popCenterData.file_link" style="font-size: 0.24rem; height: 77vh; width: 100%"></iframe>
           </div>
           <!-- 预览文件的地方（用于渲染） 2 docx 文件预览
             <div v-else-if="popCenterData.file_suffix == '.docx'" style="background-color: #808080; max-height: 11rem; overflow-y: scroll">
@@ -677,7 +678,7 @@
             </div>
           -->
           <div v-else>
-            <iframe :src="'http://www.pfile.com.cn/api/profile/onlinePreview?url=' + popCenterData.file_link" style="font-size: 0.24rem; height: 77vh; width: 100%"></iframe>
+            <iframe :src="'http://view.xdocin.com/xdoc?_xdoc=' + popCenterData.file_link" style="font-size: 0.24rem; height: 77vh; width: 100%"></iframe>
           </div>
         </div>
         <!-- 8- 其他文件 -->
