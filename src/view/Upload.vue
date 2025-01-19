@@ -86,6 +86,7 @@
               <var-option label="cookies" />
               <var-option label="common" />
             </var-select>
+            <var-button type="info" size="mini" class="master-card" @click="toCard">一键打卡</var-button>
           </div>
           <div class="uploadTurn"><span>添加时间戳: </span> <var-switch v-model="addTimeNow" @change="changeTimeName" /></div>
           <div class="uploadText"><span>文件描述: </span> <textarea v-model="fileRemark" placeholder="输入备注..."></textarea></div>
@@ -116,6 +117,7 @@ import { getQiNiuTokenApi, minsertfileApi } from "../api/index";
 import * as qiniu from "qiniu-js";
 import dayjs from "dayjs";
 import * as OSS from "../utils/tool"; // 引入oss.js
+import { upload } from "qiniu-js";
 
 let imageData = ref(""); //图片链接
 let fileInput = ref(null); //拍照上传文本的ref
@@ -138,6 +140,27 @@ let fileRemark = ref(""); //上传的文件对象信息
 let fileAddress = ref(""); //上传的文件地址信息
 const userObj = ref({}); //用户信息对象
 // ---------------------------------------------------
+// 功能函数
+function padZero(num) {
+  return num < 10 ? "0" + num : num;
+}
+
+function getFormattedDateForPunchCard() {
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = padZero(now.getMonth() + 1);
+  const day = padZero(now.getDate());
+
+  return `${year}年/${month}月/${day}日`;
+}
+// ---------------------------------------------------
+// 点击打卡按钮
+function toCard() {
+  // 获取后缀名
+  let suffix = uploadName.value.split(".").pop();
+  let name = getFormattedDateForPunchCard() + " 打卡." + suffix;
+  uploadName.value = name; //文件名称。
+}
 
 // 加载数据
 setTimeout(() => {
@@ -171,6 +194,15 @@ function getCurrentCity() {
 
 // 确认上传文件
 function toSendFile() {
+  // 判断是否有文件正在上传
+  if (processValue.value > 0) {
+    return Snackbar({
+      content: "文件正在上传中",
+      duration: 1000,
+      type: "error",
+    });
+  }
+  processValue.value = 0.1; //进度条
   // 上传到阿里OSS
   OSS.client()
     .multipartUpload(selectValue.value + "/" + uploadName.value, uploadFile.value, {
@@ -357,10 +389,10 @@ function LocalUpload() {
 // 本地上传输入框
 function LocalUploadChange(event) {
   const file = event.target.files[0];
-  console.log(file);
+  // console.log(file);
 
   let suffix = "." + file.name.split(".").pop();
-  console.log(suffix);
+  // console.log(suffix);
   isSFXtoTYPE(suffix); //根据后缀名获取文件类型。
 
   let arr = file.name.split(".");
@@ -592,6 +624,10 @@ function reupload() {
       span {
         font-size: 0.28rem;
         margin-top: 0.25rem;
+      }
+      .master-card {
+        margin-top: 0.25rem;
+        margin-left: 0.25rem;
       }
     }
     .uploadText {
