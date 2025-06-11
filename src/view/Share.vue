@@ -12,7 +12,7 @@
         <!-- 0  图片  -->
         <var-skeleton card :rows="0" :loading="loading">
           <div v-if="item.file_type == 0">
-            <img :src="item.file_link" alt="Image" />
+            <img :src="item.file_link.split('?')[0] + '?x-oss-process=image/resize,w_200'" alt="Image" />
           </div>
         </var-skeleton>
         <!--1 视频  -->

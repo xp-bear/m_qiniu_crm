@@ -44,7 +44,7 @@
                 <div class="box">
                   <!-- 0  图片  -->
                   <div v-if="item.file_type == 0">
-                    <img :src="item.file_link" alt="" />
+                    <img :src="item.file_link.split('?')[0] + '?x-oss-process=image/resize,w_200'" alt="" />
                   </div>
                   <!--1 视频  -->
                   <div v-else-if="item.file_type == 1">
@@ -134,7 +134,7 @@
               <var-skeleton card card-height="1.5rem" title :loading="loadingScreen">
                 <div class="box">
                   <div>
-                    <img :src="item.file_link" alt="" />
+                    <img :src="item.file_link.split('?')[0] + '?x-oss-process=image/resize,w_200'" alt="" />
                   </div>
 
                   <div class="msg">
